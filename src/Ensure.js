@@ -1,7 +1,8 @@
-(function () {
+(function (target) {
     'use strict';
     var Promise,
-        Defer;
+        Defer,
+        exports;
 
     Promise = function () {
         this.resolveCalls = [];
@@ -125,7 +126,7 @@
         }
     };
 
-    window.E = function (data) {
+    exports = function (data) {
         var p = new Promise();
         if (data !== null && typeof (data) !== 'undefined') {
             if (data.name && data.name.indexOf("Error") > -1) {
@@ -139,5 +140,7 @@
 
         return p;
     };
-    window.E.defer = Defer;
-}());
+    exports.defer = Defer;
+
+    target.E = exports;
+}(window.EnsureTarget || window));
