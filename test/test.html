@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html>
+    <head>
+    </head>
+
+    <body>
+        <script src="../src/Ensure.js"></script>
+        <script>
+            var d = new E.defer();
+            d.promise.then(function(d){
+                var p = new E.defer();
+                setTimeout(function(){
+                    console.log(d);
+                    console.log(new Date());
+                    p.resolve(d);
+                }, 2000);
+                return p.promise;
+            }).then(function(d){
+                var p = new E.defer();
+                setTimeout(function(){
+                    console.log(d);
+                    console.log(new Date());
+                }, 2000);
+            });
+
+            // d.resolve(10);
+
+        </script>
+    </body>
+</html>
