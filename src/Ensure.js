@@ -77,6 +77,9 @@
         }
     };
 
+    /**
+     * Creates a wrapper for a promise that allows it to be resolved at a later point
+     */
     Defer = function () {
         this.promise = new Promise();
     };
@@ -126,6 +129,20 @@
         }
     };
 
+
+    /**
+     * The exports function is the public interface to Ensure. The function
+     * itself creates a promise that is automatically resolved/rejected with
+     * the passed parameter
+     * @param   {Any}     data The data or error to apply to the promise. If
+     *                       data is an Error, p will be a rejection, whereas
+     *                       it will be a resolution if data is any other object.
+     *                       If data is not provided, this function will return
+     *                       a raw promise that has not been modified from its
+     *                       default state.
+     * @returns {Promise} A new Promise object that has had the given data applied
+     *                    to it, or an undecided Promise if no data was provided.
+     */
     exports = function (data) {
         var p = new Promise();
         if (data !== null && typeof (data) !== 'undefined') {
