@@ -25,6 +25,26 @@
 
             // d.resolve(10);
 
+            var f = new E.defer();
+            f.promise.then(function(f){
+                var p = new E.defer();
+                setTimeout(function(){
+                    console.log(f);
+                    console.log(new Date());
+                    p.resolve([f-5, f+5]);
+                }, 2000);
+                return p.promise;
+            }).spread(function(f, a){
+                var p = new E.defer();
+                setTimeout(function(){
+                    console.log(f);
+                    console.log(a);
+                    console.log(new Date());
+                }, 2000);
+            });
+
+            // f.resolve(10);
+
         </script>
     </body>
 </html>

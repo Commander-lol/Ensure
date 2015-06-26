@@ -32,27 +32,61 @@
             if (resolveCall) {
                 this.resolveCalls.push({
                     func: resolveCall,
-                    defer: defer
+                    defer: defer,
+                    multiparam: false
                 });
             }
 
             if (rejectCall) {
                 this.rejectCalls.push({
                     func: rejectCall,
-                    defer: defer
+                    defer: defer,
+                    multiparam: false
                 });
             }
 
             if (this.status === 'resolved') {
                 this.callback({
                     func: resolveCall,
-                    defer: defer
+                    defer: defer,
+                    multiparam: false
                 }, this.data);
             } else if (this.status === 'rejected') {
                 this.callback({
                     func: rejectCall,
-                    defer: defer
+                    defer: defer,
+                    multiparam: false
                 }, this.error);
+            }
+
+            return defer.promise;
+        },
+
+        /**
+         * Tells the callback to treat the result being passed to it
+         * as an array of parameters instead of a single argument. Doesn't
+         * support rejection callbacks, as it would make no sense - only the
+         * error is passed to rejections.
+         * @param   {Function} resolveCall The callback that will do things with multiple
+         *                               parameters. One parameter will need to be declared
+         *                               for each expected element in the resolved array.
+         * @returns {Promise}  A Promise object for chaining
+         */
+        spread: function (resolveCall) {
+            var defer = new Defer();
+
+            this.resolveCalls.push({
+                func: resolveCall,
+                defer: defer,
+                multiparam: true
+            });
+
+            if (this.status === 'resolved') {
+                this.callback({
+                    func: resolveCall,
+                    defer: defer,
+                    multiparam: true
+                }, this.data);
             }
 
             return defer.promise;
@@ -67,7 +101,7 @@
          */
         callback: function (callbackDef, result) {
             window.setTimeout(function () {
-                var res = callbackDef.func(result);
+                var res = callbackDef.multiparam ? callbackDef.func.apply(callbackDef.func, result) : callbackDef.func.call(callbackDef.func, result);
                 if (res instanceof Promise) {
                     callbackDef.defer.bind(res);
                 } else {
